@@ -1,15 +1,16 @@
 # nixpacks.toml
 
 [phases.setup]
-# Add "ta-lib" to the list of Nix packages to install
-# Add any other system dependencies needed here too (e.g., build-essential if needed, but often included)
-nixPkgs = ["ta-lib"]
+# Add "ta-lib" AND the desired Python version
+# Ensure you choose a version compatible with freqtrade and its dependencies
+nixPkgs = ["ta-lib", "python310"] # Example: Using Python 3.10
 
-# You might also need build tools if not automatically included by Nixpacks/Railway
-# aptPkgs = ["build-essential"] # Uncomment if gcc errors persist AFTER adding ta-lib via nixPkgs
+# Optional: Add build tools if needed (less likely needed now)
+# aptPkgs = ["build-essential"]
 
 [start]
-# Make sure your start command is correct, e.g.:
+# Your start command, e.g.:
 # cmd = "python -m freqtrade trade --config user_data/config.json --strategy SimpleStrategy"
-# Replace the above with your actual start command if different.
-# If you rely on the default Nixpacks start command, you might not need this section.
+# Ensure this 'python' matches the version installed by nixPkgs (it likely will be python3.10 or python3)
+# It might be safer to use 'python3' or 'python3.10' explicitly here if needed:
+# cmd = "python3.10 -m freqtrade trade --config user_data/config.json --strategy SimpleStrategy"
