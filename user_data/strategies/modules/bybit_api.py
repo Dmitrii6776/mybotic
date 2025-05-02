@@ -19,14 +19,14 @@ def fetch_market_data(write_cache=False):
         resp.raise_for_status()
         data = resp.json()
         tickers = {item['symbol']: item for item in data.get('result', {}).get('list', [])}
-        logger.info(f\"Fetched {len(tickers)} tickers from Bybit.\")
+        logger.info(f"Fetched {len(tickers)} tickers from Bybit.")
         if write_cache:
             os.makedirs('cache', exist_ok=True)
             with open('cache/market_data.json', 'w') as f:
                 json.dump(tickers, f)
         return tickers
     except Exception as e:
-        logger.error(f\"Failed to fetch market data: {e}\")
+        logger.error(f"Failed to fetch market data: {e}")
         return {}
 
 def fetch_orderbook(symbol, write_cache=False):
@@ -35,14 +35,14 @@ def fetch_orderbook(symbol, write_cache=False):
         resp = session.get(url, timeout=10)
         resp.raise_for_status()
         data = resp.json().get('result', {})
-        logger.info(f\"Fetched orderbook for {symbol}\")
+        logger.info(f"Fetched orderbook for {symbol}")
         if write_cache:
             os.makedirs('cache', exist_ok=True)
             with open(f'cache/orderbook_{symbol}.json', 'w') as f:
                 json.dump(data, f)
         return data
     except Exception as e:
-        logger.error(f\"Failed to fetch orderbook for {symbol}: {e}\")
+        logger.error(f"Failed to fetch orderbook for {symbol}: {e}")
         return {}
 
 def fetch_candles(symbol, interval='60', write_cache=False):
@@ -51,12 +51,12 @@ def fetch_candles(symbol, interval='60', write_cache=False):
         resp = session.get(url, timeout=10)
         resp.raise_for_status()
         data = resp.json().get('result', {}).get('list', [])
-        logger.info(f\"Fetched {len(data)} candles for {symbol}\")
+        logger.info(f"Fetched {len(data)} candles for {symbol}")
         if write_cache:
             os.makedirs('cache', exist_ok=True)
             with open(f'cache/candles_{symbol}_{interval}.json', 'w') as f:
                 json.dump(data, f)
         return data
     except Exception as e:
-        logger.error(f\"Failed to fetch candles for {symbol}: {e}\")
+        logger.error(f"Failed to fetch candles for {symbol}: {e}")
         return {}

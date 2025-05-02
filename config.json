@@ -53,10 +53,8 @@
     ],
     "telegram": {
         "enabled": true,
-        "token": "7090817812:AAHSJyvyXg4B_Q5ABtukYNY7RQsH3ouT5gU
-",
-        "chat_id": "433684845
-"
+        "token": "7090817812:AAHSJyvyXg4B_Q5ABtukYNY7RQsH3ouT5gU",
+        "chat_id": "433684845"
     },
     "api_server": {
         "enabled": true,
