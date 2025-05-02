@@ -1,5 +1,5 @@
 # Use Alpine (lightweight) or switch to python:3.11-slim if you want debian-based
-FROM python:3.11-alpine
+FROM python:3.11-slim
 
 # Install required build dependencies
 RUN apk add --no-cache \
