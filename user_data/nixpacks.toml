@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ["ta-lib", "gcc", "python310"]
+
+[phases.build]
+env = {
+  TA_LIBRARY_PATH = "/nix/store/*ta-lib*/lib"
+  TA_INCLUDE_PATH = "/nix/store/*ta-lib*/include"
+}
