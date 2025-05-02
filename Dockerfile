@@ -1,16 +1,43 @@
-FROM jakobkallestad/ta-lib:python3.10-slim
+FROM python:3.10-slim
 
-# Ensure correct dynamic library paths (just in case)
-ENV LD_LIBRARY_PATH=/usr/lib:/usr/local/lib
+# Install dependencies required to compile ta-lib
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    gcc \
+    wget \
+    libffi-dev \
+    libssl-dev \
+    libxml2-dev \
+    libxslt-dev \
+    zlib1g-dev \
+    git \
+    make \
+    && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
+# Download and build ta-lib from source
+RUN wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz -O /tmp/ta-lib-0.4.0-src.tar.gz && \
+    tar -xzf /tmp/ta-lib-0.4.0-src.tar.gz -C /tmp && \
+    cd /tmp/ta-lib && \
+    ./configure --prefix=/usr && \
+    make && \
+    make install && \
+    rm -rf /tmp/*
 
-# Install Python dependencies (no need to build ta-lib → already installed in base image!)
+# Environment variables for ta-lib
+ENV TA_LIBRARY_PATH=/usr/lib
+ENV TA_INCLUDE_PATH=/usr/include
+
+# Create virtual environment
+ENV VIRTUAL_ENV=/opt/venv
+RUN python -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# Install Python dependencies
 COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy app code
+# Copy the rest of the code
 COPY . .
 
 # Start app
