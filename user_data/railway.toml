@@ -1,0 +1,12 @@
+[build]
+nixpacksPlan = true
+
+[build.nixpacks]
+phases.setup.nixPkgs = ["python310", "ta-lib"]
+
+[build.env]
+TA_LIBRARY_PATH = "/nix/store/*-ta-lib/lib"
+TA_INCLUDE_PATH = "/nix/store/*-ta-lib/include"
+
+[start]
+cmd = "python3.10 -m freqtrade trade --config user_data/config.json --strategy hype_strategy"
