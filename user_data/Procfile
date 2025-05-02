@@ -1,1 +1,1 @@
-web: uvicorn user_data.server:app --host 0.0.0.0 --port ${PORT:-8000}
+web: supervisord -c user_data/supervisord.conf
