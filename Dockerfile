@@ -1,51 +1,63 @@
-FROM python:3.10-slim
+# Use Alpine (lightweight) or switch to python:3.11-slim if you want debian-based
+FROM python:3.11-alpine
 
-# Install dependencies for building ta-lib C lib and python binding
-RUN apt-get update && apt-get install -y \
-    build-essential \
+# Install required build dependencies
+RUN apk add --no-cache \
     gcc \
-    wget \
+    musl-dev \
+    libc-dev \
+    g++ \
+    make \
+    bash \
+    tar \
     libffi-dev \
-    libssl-dev \
+    openssl-dev \
     libxml2-dev \
     libxslt-dev \
-    zlib1g-dev \
-    git \
-    make \
-    && rm -rf /var/lib/apt/lists/*
+    zlib-dev \
+    linux-headers \
+    build-base \
+    wget
 
-# Download and build ta-lib C library
-RUN wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz -O /tmp/ta-lib-0.4.0-src.tar.gz && \
-    tar -xzf /tmp/ta-lib-0.4.0-src.tar.gz -C /tmp && \
-    cd /tmp/ta-lib && \
+# Copy the ta-lib source tar.gz into container
+COPY resources/ta-lib-0.4.0-src.tar.gz /tmp/ta-lib-0.4.0-src.tar.gz
+
+# Build and install ta-lib
+RUN cd /tmp && \
+    tar -xzf ta-lib-0.4.0-src.tar.gz && \
+    cd ta-lib-0.4.0 && \
     ./configure --prefix=/usr && \
     make && \
     make install && \
-    rm -rf /tmp/*
+    rm -rf /tmp/ta-lib-0.4.0*
 
-# Create virtual environment
-ENV VIRTUAL_ENV=/opt/venv
-RUN python -m venv $VIRTUAL_ENV
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+# Set environment paths
+ENV TA_LIBRARY_PATH=/usr/lib
+ENV TA_INCLUDE_PATH=/usr/include
 
-# Upgrade pip and install setuptools manually
-RUN pip install --upgrade pip setuptools
+# Create virtualenv
+ENV VENV_PATH=.venv
+RUN python3.11 -m pip install virtualenv && \
+    python3.11 -m virtualenv -p python3.11 $VENV_PATH
 
-# Clone ta-lib-python repo and build python binding
-RUN pip install --upgrade pip && \
-    pip install numpy==1.26.4 && \
-    pip install TA-Lib -v --no-build-isolation && \
-    pip install -r requirements.txt
+ENV PATH=$VENV_PATH/bin:$PATH
 
-# Copy requirements without ta-lib
+# Upgrade pip
+RUN pip install --upgrade pip
+
+# Pin compatible numpy version first
+RUN pip install numpy==2.2.0
+
+# Install ta-lib python wrapper
+RUN pip install TA-Lib==0.6.1
+
+# Install rest of your requirements
 COPY requirements.txt .
+RUN pip install -r requirements.txt
 
-
-# Install other dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy rest of code
-COPY . .
+# Copy app files
+COPY . /app
+WORKDIR /app
 
 # Start the app
-CMD ["python", "your_main_script.py"]
+CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000"]
