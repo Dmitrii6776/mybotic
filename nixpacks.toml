@@ -1,0 +1,15 @@
+# nixpacks.toml
+
+[phases.setup]
+# Add "ta-lib" to the list of Nix packages to install
+# Add any other system dependencies needed here too (e.g., build-essential if needed, but often included)
+nixPkgs = ["ta-lib"]
+
+# You might also need build tools if not automatically included by Nixpacks/Railway
+# aptPkgs = ["build-essential"] # Uncomment if gcc errors persist AFTER adding ta-lib via nixPkgs
+
+[start]
+# Make sure your start command is correct, e.g.:
+# cmd = "python -m freqtrade trade --config user_data/config.json --strategy SimpleStrategy"
+# Replace the above with your actual start command if different.
+# If you rely on the default Nixpacks start command, you might not need this section.
