@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 
-# Install required system libraries
+# Install required OS dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     libta-lib0 \
@@ -10,15 +10,17 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Copy requirements and install python deps
+# Copy requirements first to leverage Docker caching
 COPY requirements.txt .
+
+# Install Python dependencies
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Copy project files
+# Copy the rest of the app
 COPY . .
 
-# Expose ports
+# Expose port (if needed by FastAPI/uvicorn)
 EXPOSE 8000
 
-# Start both freqtrade and API via supervisord
+# Run via supervisord (since your project uses it)
 CMD ["supervisord", "-c", "/app/user_data/supervisord.conf"]
