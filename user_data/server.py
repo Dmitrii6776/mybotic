@@ -1,4 +1,6 @@
-# user_data/strategies/hype_startegy/server.py
+from user_data.strategies.hype_startegy.hype_strategy import main as hype_main
+from user_data.strategies.scalping_strategy.scalping_strategy import main as scalp_main
+from threading import Thread
 
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
@@ -65,5 +67,15 @@ def get_scalp_signals():
 @app.get("/health")
 def get_health():
     return {"status": "ok", "message": "Server operational."}
+
+
+# --- Startup event to launch strategies ---
+@app.on_event("startup")
+def start_strategies():
+    logger.info("Starting HypeStrategy and ScalpingStrategy...")
+    hype_thread = Thread(target=hype_main.run, daemon=True)
+    scalp_thread = Thread(target=scalp_main.run, daemon=True)
+    hype_thread.start()
+    scalp_thread.start()
 
 
