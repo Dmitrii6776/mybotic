@@ -1,25 +1,37 @@
 FROM python:3.10-slim
 
-# Install TA-Lib system library & compiler tools
+# Install build tools
 RUN apt-get update && apt-get install -y \
     build-essential \
-    libta-lib0 \
-    libta-lib-dev \
+    wget \
+    curl \
+    gcc \
+    g++ \
+    make \
     && apt-get clean
+
+# Download and build TA-Lib C library from source
+RUN wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz -O /tmp/ta-lib.tar.gz \
+    && tar -xvzf /tmp/ta-lib.tar.gz -C /tmp \
+    && cd /tmp/ta-lib && ./configure --prefix=/usr && make && make install \
+    && rm -rf /tmp/ta-lib /tmp/ta-lib.tar.gz
+
+# Set environment variables for TA-Lib
+ENV TA_LIBRARY_PATH=/usr/lib
+ENV TA_INCLUDE_PATH=/usr/include
 
 WORKDIR /app
 
-# Copy requirements
+# Copy requirements first for caching
 COPY requirements.txt .
 
-# Install pip packages AFTER system library is available
-RUN pip install --upgrade pip && pip install -r requirements.txt
+# Install Python packages
+RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
-# Copy your project code
+# Copy rest of the app
 COPY . .
 
-# Expose port (optional for API)
 EXPOSE 8000
 
-# Run supervisor to launch both freqtrade + API server
+# Run supervisord
 CMD ["supervisord", "-c", "/app/user_data/supervisord.conf"]
