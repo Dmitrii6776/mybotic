@@ -75,5 +75,11 @@
     "force_entry_enable": false,
     "internals": {
         "process_throttle_secs": 5
+    },
+    "parametrs":{
+        "DATA_REFRESH_INTERVAL_MINUTES": 30
+      },
+    "API_Keys" : {
+        "crypto_panic" :"4df2734b13aae958a42beccf84983aa2e13d8317"
     }
 }

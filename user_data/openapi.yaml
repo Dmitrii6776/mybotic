@@ -1,0 +1,110 @@
+
+
+openapi: 3.1.0
+info:
+  title: HypeStrategy API
+  version: "1.0.0"
+  description: API server exposing cached trading data, sentiment, whale activity, market context, and pairlist.
+
+servers:
+  - url: http://localhost:8000
+    description: Local server
+
+paths:
+  /:
+    get:
+      summary: Root API endpoint
+      responses:
+        "200":
+          description: Status message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /market_context:
+    get:
+      summary: Get market context data
+      responses:
+        "200":
+          description: Market context JSON
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /sentiment_data:
+    get:
+      summary: Get sentiment data
+      responses:
+        "200":
+          description: Sentiment JSON
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /whale_activity:
+    get:
+      summary: Get whale activity data
+      responses:
+        "200":
+          description: Whale activity JSON
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /fear_greed:
+    get:
+      summary: Get Fear & Greed Index data
+      responses:
+        "200":
+          description: Fear & Greed JSON
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /pairlist:
+    get:
+      summary: Get dynamic pairlist
+      responses:
+        "200":
+          description: Pairlist JSON
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
+  /scalp_signals:
+    get:
+      summary: Get cached scalp signals
+      responses:
+        "200":
+          description: Scalp signals JSON
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /health:
+    get:
+      summary: Server health status
+      responses:
+        "200":
+          description: Health status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
