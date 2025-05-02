@@ -73,8 +73,8 @@ def get_health():
 @app.on_event("startup")
 def start_strategies():
     logger.info("Starting HypeStrategy and ScalpingStrategy...")
-    hype_thread = Thread(target=hype_main.run, daemon=True)
-    scalp_thread = Thread(target=scalp_main.run, daemon=True)
+    hype_thread = Thread(target=HypeStrategy.run, daemon=True)
+    scalp_thread = Thread(target=ScalpingStrategy.run, daemon=True)
     hype_thread.start()
     scalp_thread.start()
 
