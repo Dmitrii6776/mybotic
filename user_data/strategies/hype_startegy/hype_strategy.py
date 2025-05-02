@@ -1,7 +1,7 @@
 # user_data/strategies/hype_strategy.py
 
 from freqtrade.strategy import IStrategy
-from user_data.modules import indicators, scoring, telegram_notifier, pattern_recognition, dynamic_pairlist, ml
+from ..modules import indicators, scoring, telegram_notifier, pattern_recognition, dynamic_pairlist, ml
 import pandas as pd
 import json
 import os
