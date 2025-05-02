@@ -3,7 +3,7 @@
 freqtrade>=2023.3
 pandas>=1.5.3
 numpy>=1.23.5
-talib-binary>=0.4.24
+ta-lib>=0.4.24
 telethon>=1.29.0
 fastapi>=0.95.1
 uvicorn>=0.22.0
