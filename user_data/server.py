@@ -1,6 +1,8 @@
+from threading import Thread
+import time
+import pandas as pd
 from user_data.strategies.hype_startegy.hype_strategy import HypeStrategy
 from user_data.strategies.scalping_strategy.scalping_strategy import ScalpingStrategy
-from threading import Thread
 
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
@@ -25,6 +27,28 @@ app.add_middleware(
 )
 
 CACHE_DIR = os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'cache')
+
+
+# --- Background update functions ---
+def run_hype_strategy():
+    hype = HypeStrategy(config={}, timeframe="5m", dataprovider=None)
+    while True:
+        df = pd.DataFrame()  # Replace with real data loading
+        df = hype.populate_indicators(df)
+        df = hype.populate_entry_trend(df)
+        df.to_json(os.path.join(CACHE_DIR, "hype_signals.json"))
+        logger.info("HypeStrategy signals updated.")
+        time.sleep(1800)  # refresh every 30 min
+
+def run_scalp_strategy():
+    scalp = ScalpingStrategy(config={}, timeframe="1m", dataprovider=None)
+    while True:
+        df = pd.DataFrame()  # Replace with real data loading
+        df = scalp.populate_indicators(df)
+        df = scalp.populate_entry_trend(df)
+        df.to_json(os.path.join(CACHE_DIR, "scalp_signals.json"))
+        logger.info("ScalpingStrategy signals updated.")
+        time.sleep(60)  # refresh every 60 seconds
 
 def load_json(filename):
     filepath = os.path.join(CACHE_DIR, filename)
@@ -71,13 +95,9 @@ def get_health():
     return {"status": "ok", "message": "Server operational."}
 
 
-# --- Startup event to launch strategies ---
+# --- Startup event to launch background threads ---
 @app.on_event("startup")
-def start_strategies():
-    logger.info("Starting HypeStrategy and ScalpingStrategy...")
-    hype_thread = Thread(target=HypeStrategy.run, daemon=True)
-    scalp_thread = Thread(target=ScalpingStrategy.run, daemon=True)
-    hype_thread.start()
-    scalp_thread.start()
-
-
+def start_background_tasks():
+    logger.info("Starting HypeStrategy and ScalpingStrategy background tasks...")
+    Thread(target=run_hype_strategy, daemon=True).start()
+    Thread(target=run_scalp_strategy, daemon=True).start()
