@@ -1,6 +1,9 @@
 # user_data/strategies/hype_strategy.py
 
-from freqtrade.strategy import IStrategy
+try:
+    from freqtrade.strategy import IStrategy
+except ImportError:
+    IStrategy = object 
 from ..modules import indicators, scoring, telegram_notifier, pattern_recognition, dynamic_pairlist, ml
 import pandas as pd
 import json
