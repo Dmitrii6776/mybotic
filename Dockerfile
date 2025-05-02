@@ -22,4 +22,4 @@ COPY . .
 
 
 # Start the app
-CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "user_data.server:app", "--host", "0.0.0.0", "--port", "8000"]
