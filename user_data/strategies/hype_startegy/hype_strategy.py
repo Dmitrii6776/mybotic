@@ -12,6 +12,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class HypeStrategy(IStrategy):
     timeframe = '1h'
     startup_candle_count = 50

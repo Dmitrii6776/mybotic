@@ -14,7 +14,9 @@ import json
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-print("ok")
+config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'config.json'))
+with open(config_path, 'r') as config_file:
+    config = json.load(config_file)
 
 app = FastAPI(title="HypeStrategy Data API", version="1.1.0")
 
@@ -31,7 +33,7 @@ CACHE_DIR = os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'cac
 
 # --- Background update functions ---
 def run_hype_strategy():
-    hype = HypeStrategy()
+    hype = HypeStrategy(config)
     hype.config = {}
     hype.timeframe = "5m"
     hype.dp = None
@@ -44,7 +46,7 @@ def run_hype_strategy():
         time.sleep(1800)  # refresh every 30 min
 
 def run_scalp_strategy():
-    scalp = ScalpingStrategy()
+    scalp = ScalpingStrategy(config)
     scalp.config = {}
     scalp.timeframe = "1m"
     scalp.dp = None
