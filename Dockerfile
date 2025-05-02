@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
 RUN wget https://github.com/TA-Lib/ta-lib/releases/download/v0.6.1/ta-lib-0.6.1-src.tar.gz -O /tmp/ta-lib-0.6.1-src.tar.gz && \
     cd /tmp && \
     tar -xzf ta-lib-0.6.1-src.tar.gz && \
-    cd ta-lib && \
+    cd ta-lib-0.6.1 && \
     ./configure --prefix=/usr && \
     make && \
     make install
