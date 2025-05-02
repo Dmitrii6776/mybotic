@@ -32,10 +32,10 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN pip install --upgrade pip setuptools
 
 # Clone ta-lib-python repo and build python binding
-RUN git clone https://github.com/TA-Lib/ta-lib-python.git /tmp/ta-lib-python && \
-    cd /tmp/ta-lib-python && \
-    python setup.py install && \
-    rm -rf /tmp/ta-lib-python
+RUN pip install --upgrade pip && \
+    pip install numpy==1.26.4 && \
+    pip install TA-Lib -v --no-build-isolation && \
+    pip install -r requirements.txt
 
 # Copy requirements without ta-lib
 COPY requirements.txt .
