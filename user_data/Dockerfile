@@ -1,37 +1,40 @@
+# Use a base image with python
 FROM python:3.10-slim
 
-# Install build tools
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
-    wget \
-    curl \
     gcc \
-    g++ \
     make \
-    && apt-get clean
+    wget \
+    libffi-dev \
+    libssl-dev \
+    libxml2-dev \
+    libxslt-dev \
+    zlib1g-dev \
+    git \
+    && rm -rf /var/lib/apt/lists/*
 
-# Download and build TA-Lib C library from source
+# Download and build TA-Lib (C library)
 RUN wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz -O /tmp/ta-lib.tar.gz \
-    && tar -xvzf /tmp/ta-lib.tar.gz -C /tmp \
+    && tar -xzf /tmp/ta-lib.tar.gz -C /tmp \
     && cd /tmp/ta-lib && ./configure --prefix=/usr && make && make install \
-    && rm -rf /tmp/ta-lib /tmp/ta-lib.tar.gz
+    && rm -rf /tmp/ta-lib*
 
-# Set environment variables for TA-Lib
-ENV TA_LIBRARY_PATH=/usr/lib
-ENV TA_INCLUDE_PATH=/usr/include
+# Tell linker where to find TA-Lib
+ENV LD_LIBRARY_PATH="/usr/lib"
 
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy project files
+COPY . /app
 WORKDIR /app
 
-# Copy requirements first for caching
-COPY requirements.txt .
+# Set environment (optional if your app needs)
+ENV FREQTRADE_HOME=/app/user_data
 
-# Install Python packages
-RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
-
-# Copy rest of the app
-COPY . .
-
-EXPOSE 8000
-
-# Run supervisord
-CMD ["supervisord", "-c", "/app/user_data/supervisord.conf"]
+# Command to start Freqtrade or server
+CMD ["freqtrade", "trade", "--config", "user_data/config.json", "--strategy", "hype_strategy"]
