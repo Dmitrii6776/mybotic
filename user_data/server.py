@@ -1,5 +1,5 @@
-from user_data.strategies.hype_startegy.hype_strategy import main as hype_main
-from user_data.strategies.scalping_strategy.scalping_strategy import main as scalp_main
+from user_data.strategies.hype_startegy.hype_strategy import HypeStrategy
+from user_data.strategies.scalping_strategy.scalping_strategy import ScalpingStrategy
 from threading import Thread
 
 from fastapi import FastAPI
