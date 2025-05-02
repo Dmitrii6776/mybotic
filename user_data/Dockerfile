@@ -1,24 +1,25 @@
-FROM continuumio/miniconda3
+FROM python:3.10-slim
 
-# Create conda environment
-RUN conda create -n myenv python=3.10
+# Install TA-Lib system library & compiler tools
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libta-lib0 \
+    libta-lib-dev \
+    && apt-get clean
 
-# Activate env and install libta-lib
-RUN /bin/bash -c "source activate myenv && \
-    conda install -c conda-forge libta-lib && \
-    pip install ta-lib freqtrade pandas-ta"
-
-# Set working directory
 WORKDIR /app
 
-# Copy your app
+# Copy requirements
+COPY requirements.txt .
+
+# Install pip packages AFTER system library is available
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
+# Copy your project code
 COPY . .
 
-# Activate env on container start
-SHELL ["conda", "run", "-n", "myenv", "/bin/bash", "-c"]
-
-# Expose port for API (if needed)
+# Expose port (optional for API)
 EXPOSE 8000
 
-# Run your supervisor (or uvicorn, or freqtrade)
+# Run supervisor to launch both freqtrade + API server
 CMD ["supervisord", "-c", "/app/user_data/supervisord.conf"]
