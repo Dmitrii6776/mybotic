@@ -1,7 +1,7 @@
 freqtrade>=2023.3
 pandas-ta==0.3.14b0
 TA-Lib==0.6.1
-numpy==2.2.0
+numpy==1.26.4
 telethon>=1.29.0
 fastapi>=0.95.1
 uvicorn>=0.22.0
