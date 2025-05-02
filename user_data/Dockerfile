@@ -1,17 +1,16 @@
-FROM python:3.10-slim
+FROM freqtradeorg/freqtrade:stable
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libta-lib0 \
-    libta-lib-dev \
-    && apt-get clean
+WORKDIR /freqtrade
 
-WORKDIR /app
+# Copy your strategies, configs, user_data
+COPY user_data /freqtrade/user_data
+COPY config.json /freqtrade/config.json
 
-COPY requirements.txt .
+# OPTIONAL: install extra python deps if needed
+# RUN pip install --no-cache-dir -r user_data/requirements.txt
 
-RUN pip install --upgrade pip && pip install -r requirements.txt
+# Expose API port
+EXPOSE 8000
 
-COPY . .
-
-CMD ["supervisord", "-c", "/app/user_data/supervisord.conf"]
+# Start both freqtrade & FastAPI under supervisord
+CMD ["supervisord", "-c", "/freqtrade/user_data/supervisord.conf"]
