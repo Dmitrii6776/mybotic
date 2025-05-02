@@ -1,19 +1,24 @@
 FROM python:3.11-slim
 
-# Install system dependencies for ta-lib
+# Install required system libraries
 RUN apt-get update && apt-get install -y \
     build-essential \
     libta-lib0 \
     libta-lib-dev \
     && apt-get clean
 
-# Install Python dependencies
-COPY requirements.txt /app/requirements.txt
-RUN pip install --upgrade pip && pip install -r /app/requirements.txt
-
-# Copy your app
-COPY . /app
+# Set working directory
 WORKDIR /app
 
-# Run supervisord to start freqtrade and API together
+# Copy requirements and install python deps
+COPY requirements.txt .
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
+# Copy project files
+COPY . .
+
+# Expose ports
+EXPOSE 8000
+
+# Start both freqtrade and API via supervisord
 CMD ["supervisord", "-c", "/app/user_data/supervisord.conf"]
