@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+cache/
+session.*
+whale_session
+*.log
