@@ -1,6 +1,6 @@
 
 
-pandas-ta>=0.3.14
+pandas-ta
 ta-lib>=0.4.24
 freqtrade>=2023.3
 pandas>=1.5.3
