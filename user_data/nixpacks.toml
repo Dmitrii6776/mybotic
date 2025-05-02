@@ -1,12 +1,5 @@
-# nixpacks.toml
-
 [phases.setup]
-# Explicitly install ta-lib and Python 3.10 to ensure they are available in PATH
-nixPkgs = ["ta-lib", "python310"]
-
-# Optional: uncomment if you need extra system build tools
-# aptPkgs = ["build-essential"]
+nixPkgs = ["ta-lib", "python310", "gcc", "gnumake"]
 
 [start]
-# Explicit start command using python3.10 explicitly for clarity
-cmd = "python3.10 -m freqtrade trade --config user_data/config.json --strategy hype_strategy"
+cmd = "python3.10 -m freqtrade trade --config user_data/config.json --strategy SimpleStrategy"
