@@ -1,16 +1,24 @@
-FROM freqtradeorg/freqtrade:stable
+FROM continuumio/miniconda3
 
-WORKDIR /freqtrade
+# Create conda environment
+RUN conda create -n myenv python=3.10
 
-# Copy your strategies, configs, user_data
-COPY user_data /freqtrade/user_data
-COPY config.json /freqtrade/config.json
+# Activate env and install libta-lib
+RUN /bin/bash -c "source activate myenv && \
+    conda install -c conda-forge libta-lib && \
+    pip install ta-lib freqtrade pandas-ta"
 
-# OPTIONAL: install extra python deps if needed
-# RUN pip install --no-cache-dir -r user_data/requirements.txt
+# Set working directory
+WORKDIR /app
 
-# Expose API port
+# Copy your app
+COPY . .
+
+# Activate env on container start
+SHELL ["conda", "run", "-n", "myenv", "/bin/bash", "-c"]
+
+# Expose port for API (if needed)
 EXPOSE 8000
 
-# Start both freqtrade & FastAPI under supervisord
-CMD ["supervisord", "-c", "/freqtrade/user_data/supervisord.conf"]
+# Run your supervisor (or uvicorn, or freqtrade)
+CMD ["supervisord", "-c", "/app/user_data/supervisord.conf"]
