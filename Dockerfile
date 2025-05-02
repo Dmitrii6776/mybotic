@@ -1,6 +1,6 @@
 FROM python:3.10-slim
 
-# Install dependencies required to compile ta-lib
+# Install dependencies for building ta-lib C lib and python binding
 RUN apt-get update && apt-get install -y \
     build-essential \
     gcc \
@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
     make \
     && rm -rf /var/lib/apt/lists/*
 
-# Download and build ta-lib from source
+# Download and build ta-lib C library
 RUN wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz -O /tmp/ta-lib-0.4.0-src.tar.gz && \
     tar -xzf /tmp/ta-lib-0.4.0-src.tar.gz -C /tmp && \
     cd /tmp/ta-lib && \
@@ -23,22 +23,29 @@ RUN wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz -O /t
     make install && \
     rm -rf /tmp/*
 
-# Environment variables for ta-lib
-ENV TA_LIBRARY_PATH=/usr/lib
-ENV TA_INCLUDE_PATH=/usr/include
-
 # Create virtual environment
 ENV VIRTUAL_ENV=/opt/venv
 RUN python -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-# Install Python dependencies
+# Upgrade pip and install setuptools manually
+RUN pip install --upgrade pip setuptools
+
+# Clone ta-lib-python repo and build python binding
+RUN git clone https://github.com/TA-Lib/ta-lib-python.git /tmp/ta-lib-python && \
+    cd /tmp/ta-lib-python && \
+    python setup.py install && \
+    rm -rf /tmp/ta-lib-python
+
+# Copy requirements without ta-lib
 COPY requirements.txt .
-RUN pip install --upgrade pip
+
+
+# Install other dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the code
+# Copy rest of code
 COPY . .
 
-# Start app
-CMD ["python", "-m", "freqtrade", "trade", "--config", "user_data/config.json", "--strategy", "MyStrategy"]
+# Start the app
+CMD ["python", "your_main_script.py"]
