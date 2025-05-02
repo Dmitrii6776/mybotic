@@ -31,7 +31,10 @@ CACHE_DIR = os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'cac
 
 # --- Background update functions ---
 def run_hype_strategy():
-    hype = HypeStrategy(config={}, timeframe="5m", dataprovider=None)
+    hype = HypeStrategy()
+    hype.config = {}
+    hype.timeframe = "5m"
+    hype.dp = None
     while True:
         df = pd.DataFrame()  # Replace with real data loading
         df = hype.populate_indicators(df)
@@ -41,7 +44,10 @@ def run_hype_strategy():
         time.sleep(1800)  # refresh every 30 min
 
 def run_scalp_strategy():
-    scalp = ScalpingStrategy(config={}, timeframe="1m", dataprovider=None)
+    scalp = ScalpingStrategy()
+    scalp.config = {}
+    scalp.timeframe = "1m"
+    scalp.dp = None
     while True:
         df = pd.DataFrame()  # Replace with real data loading
         df = scalp.populate_indicators(df)
