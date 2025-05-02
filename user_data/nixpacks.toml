@@ -1,16 +1,12 @@
 # nixpacks.toml
 
 [phases.setup]
-# Add "ta-lib" AND the desired Python version
-# Ensure you choose a version compatible with freqtrade and its dependencies
-nixPkgs = ["ta-lib", "python310"] # Example: Using Python 3.10
+# Explicitly install ta-lib and Python 3.10 to ensure they are available in PATH
+nixPkgs = ["ta-lib", "python310"]
 
-# Optional: Add build tools if needed (less likely needed now)
+# Optional: uncomment if you need extra system build tools
 # aptPkgs = ["build-essential"]
 
 [start]
-# Your start command, e.g.:
-# cmd = "python -m freqtrade trade --config user_data/config.json --strategy SimpleStrategy"
-# Ensure this 'python' matches the version installed by nixPkgs (it likely will be python3.10 or python3)
-# It might be safer to use 'python3' or 'python3.10' explicitly here if needed:
-# cmd = "python3.10 -m freqtrade trade --config user_data/config.json --strategy SimpleStrategy"
+# Explicit start command using python3.10 explicitly for clarity
+cmd = "python3.10 -m freqtrade trade --config user_data/config.json --strategy hype_strategy"
