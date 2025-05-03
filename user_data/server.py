@@ -47,13 +47,11 @@ CACHE_DIR = os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'cac
 
 # --- Background update functions ---
 def run_hype_strategy():
-    hype = get_strategy("HypeStrategy")
     while True:
         main.run_hype_strategy
         time.sleep(1800)  # refresh every 30 min
 
 def run_scalp_strategy():
-    scalp = get_strategy("ScalpingStrategy")
     while True:
         main.run_scalp_strategy
         time.sleep(60)  # refresh every 60 seconds
