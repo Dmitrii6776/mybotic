@@ -3,11 +3,11 @@
 import logging
 import os
 import json
-from user_data.modules.market_context import fetch_market_context
-from user_data.modules.bybit_api import fetch_market_data
-from user_data.modules.reddit_api import fetch_reddit_mentions
-from user_data.modules.cryptopanic_api import fetch_news_sentiment
-from user_data.modules.fear_greed_api import fetch_fear_greed_index
+from user_data.strategies.modules.market_context import fetch_market_context
+from user_data.strategies.modules.bybit_api import fetch_market_data
+from user_data.strategies.modules.reddit_api import fetch_reddit_mentions
+from user_data.strategies.modules.cryptopanic_api import fetch_news_sentiment
+from user_data.strategies.modules.fear_greed_api import fetch_fear_greed_index
 
 logger = logging.getLogger(__name__)
 
