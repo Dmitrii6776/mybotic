@@ -1,15 +1,15 @@
 from threading import Thread
 import time
 import pandas as pd
-from user_data.strategies.hype_startegy.hype_strategy import HypeStrategy
-from user_data.strategies.scalping_strategy.scalping_strategy import ScalpingStrategy
-
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import logging
 import os
 import json
+from user_data.main import get_strategy, fetch_data, fetch_metadata
+from user_data.strategies.hype_startegy.hype_strategy import HypeStrategy
+from user_data.strategies.scalping_strategy.scalping_strategy import ScalpingStrategy
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -33,26 +33,24 @@ CACHE_DIR = os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'cac
 
 # --- Background update functions ---
 def run_hype_strategy():
-    hype = HypeStrategy(config)
-    hype.config = {}
-    hype.timeframe = "5m"
-    hype.dp = None
+    hype = get_strategy("HypeStrategy")
     while True:
-        df = pd.DataFrame()  # Replace with real data loading
-        df = hype.populate_indicators(df)
+        data = fetch_data()
+        metadata = fetch_metadata()
+        df = data
+        df = hype.populate_indicators(df, metadata=metadata)
         df = hype.populate_entry_trend(df)
         df.to_json(os.path.join(CACHE_DIR, "hype_signals.json"))
         logger.info("HypeStrategy signals updated.")
         time.sleep(1800)  # refresh every 30 min
 
 def run_scalp_strategy():
-    scalp = ScalpingStrategy(config)
-    scalp.config = {}
-    scalp.timeframe = "1m"
-    scalp.dp = None
+    scalp = get_strategy("ScalpingStrategy")
     while True:
-        df = pd.DataFrame()  # Replace with real data loading
-        df = scalp.populate_indicators(df)
+        data = fetch_data()
+        metadata = fetch_metadata()
+        df = data
+        df = scalp.populate_indicators(df, metadata=metadata)
         df = scalp.populate_entry_trend(df)
         df.to_json(os.path.join(CACHE_DIR, "scalp_signals.json"))
         logger.info("ScalpingStrategy signals updated.")
