@@ -8,8 +8,7 @@ import logging
 import os
 import json
 from user_data.main import get_strategy, fetch_data, fetch_metadata
-from user_data.strategies.hype_startegy.hype_strategy import HypeStrategy
-from user_data.strategies.scalping_strategy.scalping_strategy import ScalpingStrategy
+
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
