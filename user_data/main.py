@@ -57,27 +57,31 @@ def fetch_data():
     logger.info("Data fetched successfully.")
     return metadata
 
-def run_strategies():
+def run_hype_strategy():
     metadata = fetch_data()
-
-    # Create DataFrame from market data or other module outputs
     df = indicators.prepare_dataframe(metadata["market_data"])
 
     logger.info("Running HypeStrategy...")
     hype_strategy = HypeStrategy()
     hype_signals = hype_strategy.populate_indicators(df, metadata)
 
+    logger.info("Processing HypeStrategy signals...")
+    for signal in hype_signals:
+        telegram_notifier.send_trade_alert(**signal)
+
+def run_scalp_strategy():
+    metadata = fetch_data()
+    df = indicators.prepare_dataframe(metadata["market_data"])
+
     logger.info("Running ScalpingStrategy...")
     scalp_strategy = ScalpingStrategy()
     scalp_signals = scalp_strategy.populate_indicators(df, metadata)
 
-    logger.info("Processing signals...")
-    for signal in hype_signals:
-        telegram_notifier.send_trade_alert(**signal)
-
+    logger.info("Processing ScalpingStrategy signals...")
     for signal in scalp_signals:
         telegram_notifier.send_trade_alert(**signal)
 
 if __name__ == "__main__":
     logger.info("Starting main strategy runner...")
-    run_strategies()
+    run_hype_strategy()
+    run_scalp_strategy()

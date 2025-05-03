@@ -7,7 +7,30 @@ from fastapi.middleware.cors import CORSMiddleware
 import logging
 import os
 import json
-from user_data.main import get_strategy, fetch_data, fetch_metadata
+from user_data import main
+from user_data.strategies.modules import (
+    custum_data_fetch,
+    market_context,
+    
+)
+
+def get_strategy(name):
+    if name.lower() == "hypestrategy":
+        return HypeStrategy()
+    elif name.lower() == "scalpingstrategy":
+        return ScalpingStrategy()
+    else:
+        raise ValueError(f"Unknown strategy: {name}")
+
+def fetch_data():
+    return custum_data_fetch.fetch_data()
+
+def fetch_metadata():
+    return {
+        "market_context": market_context.fetch_market_context(),
+        "sentiment_data": custum_data_fetch.fetch_sentiment_data(),
+        "whale_activity": custum_data_fetch.fetch_whale_activity(),
+    }
 
 
 logger = logging.getLogger(__name__)
@@ -34,25 +57,13 @@ CACHE_DIR = os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'cac
 def run_hype_strategy():
     hype = get_strategy("HypeStrategy")
     while True:
-        data = fetch_data()
-        metadata = fetch_metadata()
-        df = data
-        df = hype.populate_indicators(df, metadata=metadata)
-        df = hype.populate_entry_trend(df)
-        df.to_json(os.path.join(CACHE_DIR, "hype_signals.json"))
-        logger.info("HypeStrategy signals updated.")
+        main.run_hype_strategy
         time.sleep(1800)  # refresh every 30 min
 
 def run_scalp_strategy():
     scalp = get_strategy("ScalpingStrategy")
     while True:
-        data = fetch_data()
-        metadata = fetch_metadata()
-        df = data
-        df = scalp.populate_indicators(df, metadata=metadata)
-        df = scalp.populate_entry_trend(df)
-        df.to_json(os.path.join(CACHE_DIR, "scalp_signals.json"))
-        logger.info("ScalpingStrategy signals updated.")
+        main.run_scalp_strategy
         time.sleep(60)  # refresh every 60 seconds
 
 def load_json(filename):
