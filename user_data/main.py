@@ -5,7 +5,7 @@ import os
 from user_data.strategies.hype_startegy.hype_strategy import HypeStrategy
 from user_data.strategies.scalping_strategy.scalping_strategy import ScalpingStrategy
 
-from strategies.modules import (
+from user_data.strategies.modules import (
     bybit_api,
     cryptopanic_api,
     custum_data_fetch,
