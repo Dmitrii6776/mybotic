@@ -2,8 +2,8 @@ import json
 import logging
 import os
 
-from strategies.hype_startegy.hype_strategy import HypeStrategy
-from strategies.scalping_strategy.scalping_strategy import ScalpingStrategy
+from user_data.strategies.hype_startegy.hype_strategy import HypeStrategy
+from user_data.strategies.scalping_strategy.scalping_strategy import ScalpingStrategy
 
 from strategies.modules import (
     bybit_api,
