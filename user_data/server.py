@@ -14,14 +14,6 @@ from user_data.strategies.modules import (
     
 )
 
-def get_strategy(name):
-    if name.lower() == "hypestrategy":
-        return HypeStrategy()
-    elif name.lower() == "scalpingstrategy":
-        return ScalpingStrategy()
-    else:
-        raise ValueError(f"Unknown strategy: {name}")
-
 def fetch_data():
     return custum_data_fetch.fetch_data()
 
