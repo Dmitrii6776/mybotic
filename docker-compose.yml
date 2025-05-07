@@ -44,8 +44,9 @@ services:
     restart: unless-stopped
     volumes:
       - ./:/app
-    environment:
-      - FT_API_USER = 
+    environment: 
       - FT_API_PASS
+      - FREQTRADE_HOST=${FREQTRADE_HOST}
+      - FT_API_USER=${FT_API_USER}
     depends_on:
       - freqtrade

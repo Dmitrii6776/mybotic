@@ -10,9 +10,10 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 app = Flask(__name__)
 
 # --- Freqtrade API Configuration ---
-FREQTRADE_URL = "http://freqtrade:8080/api/v1"  # Adjust if needed
-FT_USERNAME = os.environ.get("FT_API_USER")  # Default matches config
-FT_PASSWORD = os.environ.get("FT_API_PASS")  # Get from env
+FREQTRADE_HOST = os.environ.get("FREQTRADE_HOST", "http://freqtrade:8080")
+FREQTRADE_URL = f"{FREQTRADE_HOST}/api/v1"
+FT_USERNAME = os.environ.get("FT_API_USER")
+FT_PASSWORD = os.environ.get("FT_API_PASS")
 
 
 def call_ft_api(endpoint, method='GET', params=None, json_data=None):
