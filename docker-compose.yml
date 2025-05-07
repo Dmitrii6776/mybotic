@@ -34,3 +34,18 @@ services:
       --db-url sqlite:////freqtrade/user_data/tradesv3.sqlite
       --config /freqtrade/user_data/config.json
       --strategy SampleStrategy
+
+  web:
+    image: python:3.11-slim
+    working_dir: /app
+    command: python server.py
+    ports:
+      - "5001:5001"
+    restart: unless-stopped
+    volumes:
+      - ./:/app
+    environment:
+      - FT_API_USER
+      - FT_API_PASS
+    depends_on:
+      - freqtrade
