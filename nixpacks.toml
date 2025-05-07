@@ -1,3 +1,0 @@
-toml
-[nix]
-nixPkgs = ["ta-lib", "python310", "gcc", "make", "wget", "libffi", "openssl", "libxml2", "libxslt", "zlib", "git"]
