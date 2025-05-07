@@ -5,3 +5,5 @@ autopep8
 # App
 flask
 gunicorn
+freqtrade
+requests
