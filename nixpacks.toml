@@ -1,0 +1,3 @@
+toml
+[nix]
+nixPkgs = ["ta-lib", "python310", "gcc"]
