@@ -46,20 +46,21 @@
             "method": "StaticPairList"
         }
     ],
-    "edge": {
-        "use_ai": true,
-        "ai_model": "LSTM",
-        "enabled": true,
-        "process_throttle_secs": 3600,
-        "calculate_funding_fees": false,
-        "stoploss_range_min": -0.01,
-        "stoploss_range_max": -0.3,
-        "stoploss_range_step": -0.01,
-        "minimum_winrate": 0.6,
-        "minimum_expectancy": 0.2,
-        "min_trade_number": 10,
-        "max_trade_duration_minute": 1440,
-        "remove_pumps": false
+   "edge": {
+    "use_ai": true,
+    "ai_model": "LSTM",
+    "enabled": true,
+    "process_throttle_secs": 3600,
+    "calculate_funding_fees": false,
+    "allowed_risk": 0.1,
+    "stoploss_range_min": -0.01,
+    "stoploss_range_max": -0.3,
+    "stoploss_range_step": -0.01,
+    "minimum_winrate": 0.6,
+    "minimum_expectancy": 0.2,
+    "min_trade_number": 10,
+    "max_trade_duration_minute": 1440,
+    "remove_pumps": false
     },
     "telegram": {
         "enabled": true,
