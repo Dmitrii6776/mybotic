@@ -45,7 +45,7 @@ services:
     volumes:
       - ./:/app
     environment:
-      - FT_API_USER
-      - FT_API_PASS
+      - FT_API_USER =  dmitrii6776
+      - FT_API_PASS = 6776
     depends_on:
       - freqtrade
